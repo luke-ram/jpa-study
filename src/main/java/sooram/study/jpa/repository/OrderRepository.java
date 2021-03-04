@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import sooram.study.jpa.domain.Order;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -18,5 +19,17 @@ public class OrderRepository {
 
     public Order findOne(Long id) {
         return em.find(Order.class, id);
+    }
+
+    public List<Order> findAll(OrderSearch orderSearch) {
+        return em.createQuery("select o from Order o join o.member m" +
+                " where o.status = :status " +
+                " and m.name like  :name", Order.class)
+                .setParameter("status", orderSearch.getOrderStatus())
+                .setParameter("name", orderSearch.getMemberName())
+                .setFirstResult(0)
+                .setMaxResults(1000) // 최대 1000건
+                .getResultList();
+
     }
 }
