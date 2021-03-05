@@ -1,5 +1,6 @@
 package sooram.study.jpa.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import sooram.study.jpa.domain.item.Item;
@@ -22,6 +23,7 @@ public class OrderItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORDER_ID")
+    @JsonIgnore
     private Order order;
 
     private int orderPrice;
