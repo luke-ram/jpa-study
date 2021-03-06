@@ -8,6 +8,8 @@ import sooram.study.jpa.domain.Address;
 import sooram.study.jpa.domain.Order;
 import sooram.study.jpa.domain.OrderStatus;
 import sooram.study.jpa.repository.OrderRepository;
+import sooram.study.jpa.repository.order.simplequery.SimpleOrderQueryRepository;
+import sooram.study.jpa.repository.order.simplequery.SimpleOrderQueryDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 public class OrderSimpleApiController {
 
     private final OrderRepository orderRepository;
+    private final SimpleOrderQueryRepository simpleOrderQueryRepository;
 
     @GetMapping("/api/v1/simple-orders")
     public List<Order> orderV1() {
@@ -39,6 +42,11 @@ public class OrderSimpleApiController {
         return orders.stream()
                 .map(SimpleOrderDto::new)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/api/v4/simple-orders")
+    public List<SimpleOrderQueryDto> orderV4() {
+        return simpleOrderQueryRepository.findOrderDtos();
     }
 
     @Data
