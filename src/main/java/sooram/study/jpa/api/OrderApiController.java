@@ -10,6 +10,9 @@ import sooram.study.jpa.domain.Order;
 import sooram.study.jpa.domain.OrderItem;
 import sooram.study.jpa.domain.OrderStatus;
 import sooram.study.jpa.repository.OrderRepository;
+import sooram.study.jpa.repository.order.query.OrderQueryDto;
+import sooram.study.jpa.repository.order.query.OrderQueryRepository;
+import sooram.study.jpa.repository.order.simplequery.SimpleOrderQueryDto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 public class OrderApiController {
 
     private final OrderRepository orderRepository;
+    private final OrderQueryRepository orderQueryRepository;
 
     @GetMapping("/api/v1/orders")
     public List<Order> ordersV1() {
@@ -74,6 +78,11 @@ public class OrderApiController {
                 .collect(Collectors.toList());
 
         return collect;
+    }
+
+    @GetMapping("/api/v4/orders")
+    public List<OrderQueryDto> ordersV4() {
+        return orderQueryRepository.findOrderQueryDtos();
     }
 
     @Data
