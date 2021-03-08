@@ -10,6 +10,7 @@ import sooram.study.jpa.domain.Order;
 import sooram.study.jpa.domain.OrderItem;
 import sooram.study.jpa.domain.OrderStatus;
 import sooram.study.jpa.repository.OrderRepository;
+import sooram.study.jpa.repository.order.query.OrderFlatDto;
 import sooram.study.jpa.repository.order.query.OrderQueryDto;
 import sooram.study.jpa.repository.order.query.OrderQueryRepository;
 import sooram.study.jpa.repository.order.simplequery.SimpleOrderQueryDto;
@@ -83,6 +84,20 @@ public class OrderApiController {
     @GetMapping("/api/v4/orders")
     public List<OrderQueryDto> ordersV4() {
         return orderQueryRepository.findOrderQueryDtos();
+    }
+
+    @GetMapping("/api/v5/orders")
+    public List<OrderQueryDto> ordersV5() {
+        return orderQueryRepository.findAllByDto_optimization();
+    }
+
+    @GetMapping("/api/v6/orders")
+    public List<OrderFlatDto> ordersV6() {
+        List<OrderFlatDto> flats = orderQueryRepository.findAllByDto_flat();
+
+
+
+        return flats;
     }
 
     @Data
