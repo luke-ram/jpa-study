@@ -6,7 +6,6 @@ import sooram.study.jpa.domain.Address;
 import sooram.study.jpa.domain.OrderStatus;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @EqualsAndHashCode(of = "orderId")

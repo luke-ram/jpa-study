@@ -11,6 +11,7 @@ import sooram.study.jpa.domain.OrderItem;
 import sooram.study.jpa.domain.OrderStatus;
 import sooram.study.jpa.repository.OrderRepository;
 import sooram.study.jpa.repository.order.query.OrderFlatDto;
+import sooram.study.jpa.repository.order.query.OrderItemQueryDto;
 import sooram.study.jpa.repository.order.query.OrderQueryDto;
 import sooram.study.jpa.repository.order.query.OrderQueryRepository;
 import sooram.study.jpa.repository.order.simplequery.SimpleOrderQueryDto;
@@ -19,6 +20,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -50,7 +53,7 @@ public class OrderApiController {
 
         List<OrderDto> collect = orders.stream()
                 .map(o -> new OrderDto(o))
-                .collect(Collectors.toList());
+                .collect(toList());
 
         return collect;
     }
@@ -63,7 +66,7 @@ public class OrderApiController {
 
         List<OrderDto> collect = orders.stream()
                 .map(o -> new OrderDto(o))
-                .collect(Collectors.toList());
+                .collect(toList());
 
         return collect;
     }
@@ -72,11 +75,11 @@ public class OrderApiController {
     public List<OrderDto> ordersV3_page(@RequestParam(value = "offset", defaultValue = "0") int offset,
                                         @RequestParam(value = "limit", defaultValue = "100") int limit) {
 
-        List<Order> orders = orderRepository.findAllWithMemberDelivery(offset,limit);
+        List<Order> orders = orderRepository.findAllWithMemberDelivery(offset, limit);
 
         List<OrderDto> collect = orders.stream()
                 .map(o -> new OrderDto(o))
-                .collect(Collectors.toList());
+                .collect(toList());
 
         return collect;
     }
@@ -92,12 +95,19 @@ public class OrderApiController {
     }
 
     @GetMapping("/api/v6/orders")
-    public List<OrderFlatDto> ordersV6() {
+    public List<OrderQueryDto> ordersV6() {
         List<OrderFlatDto> flats = orderQueryRepository.findAllByDto_flat();
 
-
-
-        return flats;
+        return flats.stream()
+                .collect(groupingBy(o -> new OrderQueryDto(o.getOrderId(),
+                                o.getName(), o.getOrderDate(), o.getOrderStatus(), o.getAddress()),
+                        mapping(o -> new OrderItemQueryDto(o.getOrderId(),
+                                o.getItemName(), o.getOrderPrice(), o.getCount()), toList())
+                )).entrySet().stream()
+                .map(e -> new OrderQueryDto(e.getKey().getOrderId(),
+                        e.getKey().getName(), e.getKey().getOrderDate(), e.getKey().getOrderStatus(),
+                        e.getKey().getAddress(), e.getValue()))
+                .collect(toList());
     }
 
     @Data
@@ -118,7 +128,7 @@ public class OrderApiController {
 
             orderItems = order.getOrderItems().stream()
                     .map(orderItem -> new OrderItemDto(orderItem))
-                    .collect(Collectors.toList());
+                    .collect(toList());
         }
     }
 
